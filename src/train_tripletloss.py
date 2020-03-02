@@ -42,6 +42,7 @@ import lfw
 from tensorflow.python.ops import data_flow_ops
 
 from six.moves import xrange  # @UnresolvedImport
+from models.resnet_v1 import resnet_v1_101
 
 def main(args):
   
@@ -129,9 +130,7 @@ def main(args):
         labels_batch = tf.identity(labels_batch, 'label_batch')
 
         # Build the inference graph
-        prelogits, _ = network.inference(image_batch, args.keep_probability, 
-            phase_train=phase_train_placeholder, bottleneck_layer_size=args.embedding_size,
-            weight_decay=args.weight_decay)
+        prelogits, _ = resnet_v1_101(image_batch, args.embedding_size)
         
         embeddings = tf.nn.l2_normalize(prelogits, 1, 1e-10, name='embeddings')
         # Split embeddings into anchor, positive and negative and calculate triplet loss
